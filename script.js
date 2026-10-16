@@ -92,6 +92,13 @@ onAuthStateChanged(auth, (user) => {
     authView.classList.add("hidden");
     appView.classList.remove("hidden");
     document.getElementById("userEmail").textContent = user.email || "";
+
+    const adminPanel = document.getElementById("adminPanel");
+    const ADMIN_UID = "TrMyz1cOwoVJKQL08pxIG5LZI7f1";
+
+    if (adminPanel) {
+      adminPanel.hidden = user.uid !== ADMIN_UID;
+    }
   } else {
     appView.classList.add("hidden");
     authView.classList.remove("hidden");
