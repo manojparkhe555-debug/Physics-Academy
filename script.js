@@ -94,7 +94,6 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("userEmail").textContent = user.email || "";
 
     const adminPanel = document.getElementById("adminPanel");
-    const ADMIN_UID = "TrMyz1cOwoVJKQL08pxIG5LZI7f1";
 
     if (adminPanel) {
       adminPanel.hidden = user.uid !== ADMIN_UID;
