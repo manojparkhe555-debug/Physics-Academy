@@ -113,3 +113,87 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     showMessage(explainError(error));
   }
 });
+
+const studentForm = document.getElementById("studentForm");
+const studentList = document.getElementById("studentList");
+const studentFormMessage = document.getElementById("studentFormMessage");
+
+if (studentForm && studentList && studentFormMessage) {
+  studentForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+    if (!user || user.uid !== ADMIN_UID) {
+      studentFormMessage.textContent = "Admin access required.";
+      return;
+    }
+
+    const studentName =
+      document.getElementById("studentName").value.trim();
+    const studentEmail =
+      document.getElementById("studentEmail").value.trim();
+    const parentContact =
+      document.getElementById("parentContact").value.trim();
+    const studentBatch =
+      document.getElementById("studentBatch").value;
+
+    try {
+      studentFormMessage.textContent = "Saving student...";
+
+      await addDoc(collection(db, "students"), {
+        name: studentName,
+        email: studentEmail,
+        parentContact: parentContact,
+        batch: studentBatch,
+        createdAt: serverTimestamp()
+      });
+
+      studentForm.reset();
+      studentFormMessage.textContent = "Student registered successfully!";
+    } catch (error) {
+      console.error(error);
+      studentFormMessage.textContent =
+        "Could not save student: " + error.message;
+    }
+  });
+
+  async function loadStudents() {
+    if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) return;
+
+    try {
+      const studentsQuery = query(
+        collection(db, "students"),
+        orderBy("createdAt", "desc")
+      );
+      const snapshot = await getDocs(studentsQuery);
+
+      studentList.replaceChildren();
+
+      if (snapshot.empty) {
+        studentList.textContent = "No students registered yet.";
+        return;
+      }
+
+      snapshot.forEach((studentDoc) => {
+        const student = studentDoc.data();
+        const item = document.createElement("p");
+        item.textContent =
+          `${student.name} — ${student.batch}` +
+          (student.email ? ` — ${student.email}` : "");
+        studentList.appendChild(item);
+      });
+    } catch (error) {
+      console.error(error);
+      studentFormMessage.textContent =
+        "Could not load students: " + error.message;
+    }
+  }
+
+  studentForm.addEventListener("submit", () => {
+    setTimeout(loadStudents, 1000);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user && user.uid === ADMIN_UID) loadStudents();
+  }); 
+}
