@@ -108,7 +108,43 @@
   <button type="button" onclick="alert('Batch management will be added next!')">
     Droppers
   </button>
+<h3>Register a Student</h3>
 
+<form id="studentForm">
+  <p>
+    <label for="studentName">Student full name</label><br>
+    <input id="studentName" type="text" required
+      placeholder="Enter student's name">
+  </p>
+
+  <p>
+    <label for="studentEmail">Student email (optional)</label><br>
+    <input id="studentEmail" type="email"
+      placeholder="student@example.com">
+  </p>
+
+  <p>
+    <label for="parentContact">Parent contact (optional)</label><br>
+    <input id="parentContact" type="tel"
+      placeholder="Parent phone number">
+  </p>
+
+  <p>
+    <label for="studentBatch">Select batch</label><br>
+    <select id="studentBatch" required>
+      <option value="">Choose a batch</option>
+      <option value="Class 11">Class 11</option>
+      <option value="Class 12">Class 12</option>
+      <option value="Droppers">Droppers</option>
+    </select>
+  </p>
+
+  <button type="submit">Register Student</button>
+  <p id="studentFormMessage" role="status"></p>
+</form>
+
+<h3>Registered Students</h3>
+<div id="studentList">Student records will appear here.</div>
   <h3>Admin Tools</h3>
   <ul>
     <li>Student and parent accounts</li>
