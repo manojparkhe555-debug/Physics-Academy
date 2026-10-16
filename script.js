@@ -1,6 +1,5 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,7 +8,6 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-// Your Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCkTeaVe-wyjpkFQ_BXRvZq-WZ34kU2ARA",
   authDomain: "physics-academy-cbec6.firebaseapp.com",
@@ -19,7 +17,6 @@ const firebaseConfig = {
   appId: "1:750571292855:web:9908606a7308668a0aa532"
 };
 
-// Connect this website to Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
@@ -34,70 +31,62 @@ function showMessage(message) {
   authMessage.textContent = message;
 }
 
-function friendlyError(error) {
+function explainError(error) {
   const messages = {
     "auth/email-already-in-use": "This email already has an account. Please sign in.",
-    "auth/invalid-email": "Please enter a valid email address.",
-    "auth/weak-password": "Choose a stronger password with at least 6 characters.",
+    "auth/invalid-email": "Enter a valid email address.",
+    "auth/weak-password": "Use a stronger password with at least 6 characters.",
     "auth/invalid-credential": "Email or password is incorrect.",
-    "auth/too-many-requests": "Too many attempts. Please wait and try again.",
-    "auth/network-request-failed": "Network error. Check your internet connection.",
-    "auth/operation-not-allowed": "Email/Password sign-in is not enabled in Firebase."
+    "auth/operation-not-allowed": "Enable Email/Password in Firebase Authentication.",
+    "auth/network-request-failed": "Check your internet connection."
   };
-
-  return messages[error.code] || `Something went wrong: ${error.code || error.message}`;
+  return messages[error.code] || "Error: " + error.code;
 }
 
-function getFormValues() {
+function getCredentials() {
   return {
     email: document.getElementById("email").value.trim(),
-    password: document.getElementById("password").value,
-    accountType: document.getElementById("accountType").value
+    password: document.getElementById("password").value
   };
 }
 
-// Create a new Firebase account
 signupBtn.addEventListener("click", async () => {
-  const { email, password } = getFormValues();
-
   if (!authForm.reportValidity()) return;
 
+  const { email, password } = getCredentials();
   signupBtn.disabled = true;
   loginBtn.disabled = true;
-  showMessage("Creating your account...");
+  showMessage("Creating account...");
 
   try {
     await createUserWithEmailAndPassword(auth, email, password);
     showMessage("Account created successfully!");
   } catch (error) {
-    showMessage(friendlyError(error));
+    showMessage(explainError(error));
   } finally {
     signupBtn.disabled = false;
     loginBtn.disabled = false;
   }
 });
 
-// Sign in to an existing account
 authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const { email, password } = getFormValues();
-
-  loginBtn.disabled = true;
+  const { email, password } = getCredentials();
   signupBtn.disabled = true;
+  loginBtn.disabled = true;
   showMessage("Signing in...");
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    showMessage(friendlyError(error));
+    showMessage(explainError(error));
   } finally {
-    loginBtn.disabled = false;
     signupBtn.disabled = false;
+    loginBtn.disabled = false;
   }
 });
 
-// Firebase maintains the signed-in session
 onAuthStateChanged(auth, (user) => {
   if (user) {
     authView.classList.add("hidden");
@@ -109,12 +98,11 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Sign out
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   try {
     await signOut(auth);
     showMessage("You have signed out.");
   } catch (error) {
-    showMessage(friendlyError(error));
+    showMessage(explainError(error));
   }
 });
