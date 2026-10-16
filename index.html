@@ -1,65 +1,99 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#102a43" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102a43">
   <title>Physics Academy</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><div class="atom">⚛</div><div><strong>Physics Academy</strong><small>Learn • Practice • Improve</small></div></div>
+    <div class="brand">
+      <div class="atom">⚛</div>
+      <div>
+        <strong>Physics Academy</strong>
+        <small>Learn • Practice • Improve</small>
+      </div>
+    </div>
     <span class="pill">Physics only</span>
   </header>
 
   <main class="container">
-    <section id="loginView" class="login-card">
-      <div class="eyebrow">WELCOME TO YOUR LEARNING SPACE</div>
+    <section id="authView" class="login-card">
+      <div class="eyebrow">YOUR LEARNING SPACE</div>
       <h1>Make Physics<br><span>make sense.</span></h1>
-      <p class="muted">Sign in to view your batch, study material, tests and attendance.</p>
-      <form id="loginForm">
-        <label for="personType">I am a</label>
-        <select id="personType" required>
-          <option value="Student">Student</option>
-          <option value="Parent">Parent</option>
+      <p class="muted">Sign in to access your Physics Academy account.</p>
+
+      <form id="authForm">
+        <label for="accountType">Account type</label>
+        <select id="accountType" required>
+          <option value="student">Student</option>
+          <option value="parent">Parent</option>
         </select>
-        <label for="studentName">Your name</label>
-        <input id="studentName" type="text" placeholder="Enter your name" required />
-        <label for="batch">Choose batch</label>
-        <select id="batch" required>
-          <option value="Class 11">Class 11</option>
-          <option value="Class 12">Class 12</option>
-          <option value="Droppers">Droppers</option>
-        </select>
-        <button class="primary full" type="submit">Open my dashboard →</button>
+
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="email"
+          placeholder="you@example.com" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password"
+          autocomplete="current-password"
+          placeholder="At least 6 characters" minlength="6" required>
+
+        <button class="primary full" id="loginBtn" type="submit">
+          Sign in
+        </button>
+        <button class="secondary full" id="signupBtn" type="button">
+          Create account
+        </button>
       </form>
-      <p class="tiny notice">Starter preview: this first version uses a demo login on this device. Real secure accounts will be added in the next stage.</p>
+
+      <p id="authMessage" class="muted" role="status" aria-live="polite"></p>
+      <p class="tiny notice">
+        Use your own account. Student and parent access to private records
+        will be configured separately before real records are added.
+      </p>
     </section>
 
     <section id="appView" class="hidden">
       <div class="welcome-row">
-        <div><div class="eyebrow" id="roleBatch">STUDENT • CLASS 11</div><h1>Hello, <span id="displayName">Learner</span> 👋</h1><p class="muted">Ready to make progress today?</p></div>
-        <button id="logoutBtn" class="secondary">Log out</button>
+        <div>
+          <div class="eyebrow">PHYSICS ACADEMY</div>
+          <h1>You're signed in!</h1>
+          <p class="muted" id="userEmail"></p>
+        </div>
+        <button id="logoutBtn" class="secondary">Sign out</button>
       </div>
+
       <div class="hero">
-        <div><span class="pill light">YOUR PHYSICS SPACE</span><h2>Small steps.<br>Stronger concepts.</h2><p>Keep your notes, practice and progress together.</p></div>
+        <div>
+          <span class="pill light">YOUR LEARNING SPACE</span>
+          <h2>Small steps.<br>Stronger concepts.</h2>
+          <p>Your Physics learning journey starts here.</p>
+        </div>
         <div class="hero-symbol">∑</div>
       </div>
-      <div class="section-heading"><h2>Your learning tools</h2><span class="muted tiny">Choose a section</span></div>
+
+      <h2>Your learning tools</h2>
       <div class="tiles">
-        <button class="tile" data-panel="materials"><span class="tile-icon blue">▤</span><strong>Study material</strong><small>Notes, chapters & PDFs</small><span class="arrow">↗</span></button>
-        <button class="tile" data-panel="tests"><span class="tile-icon purple">✓</span><strong>Online tests</strong><small>Practice questions</small><span class="arrow">↗</span></button>
-        <button class="tile" data-panel="attendance"><span class="tile-icon green">▦</span><strong>Attendance</strong><small>Track your classes</small><span class="arrow">↗</span></button>
-        <button class="tile" data-panel="results"><span class="tile-icon orange">↗</span><strong>Test results</strong><small>Your practice summary</small><span class="arrow">↗</span></button>
+        <div class="tile"><span class="tile-icon blue">▤</span>
+          <strong>Study material</strong><small>Coming soon</small></div>
+        <div class="tile"><span class="tile-icon purple">✓</span>
+          <strong>Online tests</strong><small>Coming soon</small></div>
+        <div class="tile"><span class="tile-icon green">▦</span>
+          <strong>Attendance</strong><small>Coming soon</small></div>
+        <div class="tile"><span class="tile-icon orange">↗</span>
+          <strong>Test results</strong><small>Coming soon</small></div>
       </div>
-      <section id="contentPanel" class="content-panel">
-        <div class="panel-top"><div><div class="eyebrow">GET STARTED</div><h2>Welcome to your dashboard</h2></div><span class="pill">Demo data</span></div>
-        <p class="muted">Choose Study material, Online tests, Attendance or Test results above to preview the app.</p>
-      </section>
-      <footer>Physics Academy <span>•</span> Built for focused learning</footer>
+      <p class="muted">
+        Your account is authenticated by Firebase. Academic records will
+        appear after we configure the database and permissions.
+      </p>
     </section>
   </main>
-  <script src="script.js"></script>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
