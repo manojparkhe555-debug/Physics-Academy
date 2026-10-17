@@ -176,7 +176,35 @@
   <button type="button" id="loadMaterialsBtn">
     Show Materials
   </button>
+<div id="adminMaterialsForm" hidden>
+  <h3>Publish Study Material</h3>
 
+  <form id="addMaterialForm">
+    <label for="newMaterialTitle">Title</label>
+    <input id="newMaterialTitle" type="text"
+      placeholder="e.g. Laws of Motion Notes" required>
+
+    <label for="newMaterialBatch">Batch</label>
+    <select id="newMaterialBatch" required>
+      <option value="Class 11">Class 11</option>
+      <option value="Class 12">Class 12</option>
+      <option value="Droppers">Droppers</option>
+    </select>
+
+    <label for="newMaterialCategory">Material type</label>
+    <select id="newMaterialCategory" required>
+      <option value="PDF Notes">PDF Notes</option>
+      <option value="Question Papers">Question Papers</option>
+      <option value="Video Lectures">Video Lectures</option>
+    </select>
+
+    <label for="newMaterialUrl">PDF or video link</label>
+    <input id="newMaterialUrl" type="url"
+      placeholder="https://..." required>
+
+    <button type="submit">Publish Material</button>
+  </form>
+</div>
   <div id="materialsMessage" role="status"></div>
   <div id="materialsList"></div>
 </section>
