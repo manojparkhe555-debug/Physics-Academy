@@ -196,3 +196,166 @@ if (studentForm && studentList && studentFormMessage) {
     if (user && user.uid === ADMIN_UID) loadStudents();
   }); 
 }
+
+/* ===== Physics Academy Study Materials ===== */
+
+const materialsPanel = document.getElementById("studyMaterialsPanel");
+const materialsBatch = document.getElementById("materialBatch");
+const materialsCategory = document.getElementById("materialCategory");
+const materialsList = document.getElementById("materialsList");
+const materialsMessage = document.getElementById("materialsMessage");
+const loadMaterialsBtn = document.getElementById("loadMaterialsBtn");
+const adminMaterialsForm = document.getElementById("adminMaterialsForm");
+const addMaterialForm = document.getElementById("addMaterialForm");
+
+function showMaterialsMessage(message) {
+  if (materialsMessage) materialsMessage.textContent = message;
+}
+
+function validMaterialUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+async function loadStudyMaterials() {
+  if (!materialsList || !materialsBatch || !materialsCategory) return;
+
+  materialsList.replaceChildren();
+  showMaterialsMessage("Loading materials...");
+
+  try {
+    const materialsQuery = query(
+      collection(db, "studyMaterials"),
+      where("batch", "==", materialsBatch.value)
+    );
+
+    const snapshot = await getDocs(materialsQuery);
+    const items = [];
+
+    snapshot.forEach((docSnapshot) => {
+      const material = docSnapshot.data();
+
+      if (
+        materialsCategory.value === "All" ||
+        material.category === materialsCategory.value
+      ) {
+        items.push(material);
+      }
+    });
+
+    materialsList.replaceChildren();
+
+    if (items.length === 0) {
+      showMaterialsMessage("No materials have been published for this selection yet.");
+      return;
+    }
+
+    items.forEach((material) => {
+      const card = document.createElement("div");
+      const heading = document.createElement("h3");
+      const details = document.createElement("p");
+      const link = document.createElement("a");
+
+      heading.textContent = material.title || "Untitled material";
+      details.textContent =
+        (material.category || "Material") + " • " + (material.batch || "");
+
+      if (validMaterialUrl(material.url || "")) {
+        link.href = material.url;
+        link.textContent = material.category === "Video Lectures"
+          ? "Open video lecture"
+          : "Open material";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      } else {
+        link.textContent = "Link unavailable";
+      }
+
+      card.append(heading, details, link);
+      materialsList.appendChild(card);
+    });
+
+    showMaterialsMessage("");
+  } catch (error) {
+    console.error("Study materials error:", error);
+    showMaterialsMessage(
+      "Could not load materials. Check your sign-in and Firestore permissions."
+    );
+  }
+}
+
+if (loadMaterialsBtn) {
+  loadMaterialsBtn.addEventListener("click", loadStudyMaterials);
+}
+
+if (materialsBatch) {
+  materialsBatch.addEventListener("change", loadStudyMaterials);
+}
+
+if (materialsCategory) {
+  materialsCategory.addEventListener("change", loadStudyMaterials);
+}
+
+if (addMaterialForm) {
+  addMaterialForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const user = auth.currentUser;
+
+    if (!user || user.uid !== ADMIN_UID) {
+      showMaterialsMessage("Only the administrator can publish materials.");
+      return;
+    }
+
+    const title = document.getElementById("newMaterialTitle").value.trim();
+    const batch = document.getElementById("newMaterialBatch").value;
+    const category = document.getElementById("newMaterialCategory").value;
+    const url = document.getElementById("newMaterialUrl").value.trim();
+
+    if (!title || !validMaterialUrl(url)) {
+      showMaterialsMessage("Enter a title and a valid web link.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "studyMaterials"), {
+        title,
+        batch,
+        category,
+        url,
+        createdAt: serverTimestamp(),
+        published: true
+      });
+
+      addMaterialForm.reset();
+      showMaterialsMessage("Material published successfully.");
+      await loadStudyMaterials();
+    } catch (error) {
+      console.error("Publish material error:", error);
+      showMaterialsMessage(
+        "Could not publish. Check Firestore permissions and try again."
+      );
+    }
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (materialsPanel) {
+    materialsPanel.hidden = !user;
+  }
+
+  if (adminMaterialsForm) {
+    adminMaterialsForm.hidden = !user || user.uid !== ADMIN_UID;
+  }
+
+  if (user) {
+    loadStudyMaterials();
+  } else if (materialsList) {
+    materialsList.replaceChildren();
+    showMaterialsMessage("Sign in to view study materials.");
+  }
+});
