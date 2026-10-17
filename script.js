@@ -228,10 +228,11 @@ async function loadStudyMaterials() {
   showMaterialsMessage("Loading materials...");
 
   try {
-    const materialsQuery = query(
-      collection(db, "studyMaterials"),
-      where("batch", "==", materialsBatch.value)
-    );
+   const materialsQuery = query(
+  collection(db, "studyMaterials"),
+  where("batch", "==", materialsBatch.value),
+  where("published", "==", true)
+);
 
     const snapshot = await getDocs(materialsQuery);
     const items = [];
