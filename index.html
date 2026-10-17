@@ -153,6 +153,33 @@
     <li>Attendance records</li>
   </ul>
 </section>
+  <!-- Study Materials Section -->
+<section id="studyMaterialsPanel" hidden>
+  <h2>Study Materials</h2>
+  <p>Notes, question papers and video lectures</p>
+
+  <label for="materialBatch">Select your batch</label>
+  <select id="materialBatch">
+    <option value="Class 11">Class 11</option>
+    <option value="Class 12">Class 12</option>
+    <option value="Droppers">Droppers</option>
+  </select>
+
+  <label for="materialCategory">Material type</label>
+  <select id="materialCategory">
+    <option value="All">All materials</option>
+    <option value="PDF Notes">PDF Notes</option>
+    <option value="Question Papers">Question Papers</option>
+    <option value="Video Lectures">Video Lectures</option>
+  </select>
+
+  <button type="button" id="loadMaterialsBtn">
+    Show Materials
+  </button>
+
+  <div id="materialsMessage" role="status"></div>
+  <div id="materialsList"></div>
+</section>
   <script type="module" src="script.js"></script>
 </body>
 </html>
